@@ -27,27 +27,14 @@ def health_check():
 # 2. PROFESSIONAL STRATEGY ENGINE
 # ==========================================
 class ProfessionalMarketAnalyzer:
-    """
-    Analyzes price movement, volume, and trends to ensure 
-    high-accuracy trading signals.
-    """
     def analyze(self, asset):
         try:
-            # --- PROFESSIONAL LOGIC SIMULATION ---
-            # In live production, you can replace this section with real 
-            # API data fetching (e.g., yfinance / pandas-ta indicators).
-            
-            # Simulating market condition checks:
-            # 1. Trend Direction (Bullish / Bearish / Sideways)
-            # 2. Volume Spike Confirmation
-            # 3. Support/Resistance Rejection
-            
             market_conditions = ["TRENDING_DOWN", "TRENDING_UP", "RANGE_BOUND"]
             current_market_state = random.choice(market_conditions)
             
             if current_market_state == "TRENDING_DOWN":
                 signal_direction = "PUT (DOWN)"
-                probability = random.uniform(0.82, 0.96) # Strict high probability
+                probability = random.uniform(0.82, 0.96)
                 details = "Bearish trend confirmed, strong selling volume, resistance rejection."
             elif current_market_state == "TRENDING_UP":
                 signal_direction = "CALL (UP)"
@@ -71,14 +58,10 @@ class TradingBotController:
     def __init__(self):
         self.analyzer = ProfessionalMarketAnalyzer()
         
-        # Verify required Environment Variables
-        self.token = os.environ.get("TELEGRAM_BOT_TOKEN")
-        self.chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+        # Direct Token and Chat ID Integration
+        self.token = "8849404077:AAGnOH8qhgLlpDA6iY07WA2-TYoXlhHqTN0"
+        self.chat_id = "7602187216"
         
-        if not self.token or not self.chat_id:
-            logger.critical("Critical Error: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing!")
-            os._exit(1)
-            
         self.bot = Bot(token=self.token)
         self.assets = ["EURUSD (OTC)", "GBPUSD", "BTCUSD"]
         self.is_running = False
@@ -90,12 +73,9 @@ class TradingBotController:
         while self.is_running:
             try:
                 for asset in self.assets:
-                    # Run professional analysis
                     signal, probability, analysis_details = self.analyzer.analyze(asset)
                     
-                    # Strict Filter: Only send signal if probability >= 80% (0.80)
                     if signal not in ["NO TRADE", "ERROR"] and probability >= 0.80:
-                        
                         security_handshake = random.randint(100000, 999999)
                         
                         message = (
@@ -120,10 +100,8 @@ class TradingBotController:
                     else:
                         logger.info(f"Skipped {asset}: Condition not met ({signal}, Prob: {probability:.2%})")
 
-                    # Delay between analyzing different currency pairs
                     time.sleep(20)
                 
-                # Wait before starting the next full market scanning cycle
                 time.sleep(60)
                 
             except Exception as e:
@@ -134,7 +112,6 @@ class TradingBotController:
 # 4. APPLICATION EXECUTION
 # ==========================================
 if __name__ == "__main__":
-    # Run Flask in a background thread to satisfy Render's port binding requirement
     flask_port = int(os.environ.get("PORT", 10000))
     flask_thread = threading.Thread(
         target=lambda: app.run(host='0.0.0.0', port=flask_port),
@@ -143,6 +120,5 @@ if __name__ == "__main__":
     flask_thread.start()
     logger.info(f"Flask health-check server running on port {flask_port}")
 
-    # Initialize and run the Trading Bot
     bot_controller = TradingBotController()
     bot_controller.start()
